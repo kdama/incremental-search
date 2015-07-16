@@ -30,3 +30,17 @@ incremental search web app
 * JavaScript ライブラリとして [jQuery](http://jquery.com/), [Knockout](http://knockoutjs.com/) のみ利用してよい
 * JavaScript のスタイルは [jQuery's JavaScript Style Guide](https://contribute.jquery.org/style-guide/js/) に従う
 * JavaScript を HTML ファイルに直接記述してはならない
+
+方針
+----
+
+* HTML
+  * **URL バー**: 余裕あれば付ける。`<input>` でやる。隣に [Go] button を置く
+  * **検索ボックス**: `<input>` でやる。隣に button は置かない。keyUp イベントでインクリメンタルサーチする
+  * **データのリスト**: `<ul>` `<li>` でがんばる
+* Google Sheets からの取得
+  1. URL の最後に ?alt=json 付けると JSON もらえるらしい... `http://creator.aainc.co.jp/archives/6240`
+  2. gs$cell をがんばって読む (ここがいちばんつらそう..)
+  3. 必要なだけ `<ul>` `<li>` を生成する
+* インクリメンタルサーチ
+  * 一旦リストの全要素を hide して、contains で絞ったものだけ show すればいいらしい... `http://tech.aainc.co.jp/archives/6364`
