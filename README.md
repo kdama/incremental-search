@@ -1,6 +1,10 @@
 # incremental-search
 incremental search web app
 
+Demo
+----
+http://kdama.github.io/incremental-search/
+
 要求
 ----
 
