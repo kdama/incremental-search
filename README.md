@@ -4,6 +4,7 @@ incremental search web app
 Demo
 ----
 http://kdama.github.io/incremental-search/
+* デフォルトのデータは「なんちゃって個人情報」`http://kazina.com/dummy/` により生成したものです
 
 要求
 ----
