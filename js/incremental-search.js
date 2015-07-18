@@ -14,7 +14,7 @@ function itemsFromGoogleSheets( data ) {
     var cellData = cell.$t;
 
     if ( cellRow === "1" ) {
-      // entry is a column label.
+      // this cell is a column label.
       columns[ cellCol ] = cellData;
     } else {
       if ( !items[ cellRow ] ) {
@@ -50,10 +50,13 @@ var ViewModel = function( url ) {
   };
 
   this.matches = function( obj ) {
+    // concat all property values...
     var values = "";
     Object.keys( obj ).forEach( function( key ) {
       values += obj[ key ] + " ";
     });
+
+    // if keyword is empty, show all data.
     return !self.keyword() || values.includes( self.keyword() );
   };
 };
