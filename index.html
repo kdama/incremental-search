@@ -13,7 +13,7 @@
     <div class="form-group">
       <form data-bind="submit: loadUrl">
         <div class="input-group">
-          <input class="form-control" placeholder="URL" data-bind="value: url"/>
+          <input class="form-control" type="url" name="url" placeholder="URL" data-bind="value: url"/>
           <span class="input-group-btn">
             <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span></button>
           </span>
@@ -21,7 +21,7 @@
       </form>
     </div>
     <div class="form-group">
-      <input class="form-control" placeholder="Search" data-bind="textInput: keyword"/>
+      <input class="form-control" name="keyword" placeholder="Search" data-bind="textInput: keyword"/>
     </div>
   </div>
   <div>
