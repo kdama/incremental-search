@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>incremental-search</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+<body data-bind="event: { load: loadUrl() }">
+
+<div class="container">
+  <h1>incremental-search</h1>
+  <div class="form">
+    <div class="form-group">
+      <form data-bind="submit: loadUrl">
+        <div class="input-group">
+          <input class="form-control" placeholder="URL" data-bind="value: url"/>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span></button>
+          </span>
+        </div>
+      </form>
+    </div>
+    <div class="form-group">
+      <input class="form-control" placeholder="Search" data-bind="textInput: keyword"/>
+    </div>
+  </div>
+  <div>
+    <div class="alert alert-danger" role="alert" data-bind="visible: errormsg">
+      <span data-bind="text: errormsg"></span>
+    </div>
+  </div>
+  <div class="row" data-bind="foreach: { data: items, as: 'item' }">
+    <div class="col-xs-6 col-md-3" data-bind="visible: item && $root.matches( item )">
+      <div class="thumbnail">
+        <ul class="list-unstyled" data-bind="foreach: { data: item ? Object.keys( item ) : [], as: 'param_key' }">
+          <li data-bind="text: item[ param_key ], css: { h2: param_key === Object.keys( item )[ 0 ] }"></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+<script src="js/incremental-search.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+/* global $, ko */
+
+( function( $ ) {
+
+function itemsFromGoogleSheets( data ) {
+  var sheet = data.feed.entry;
+  var items = [];
+  var columns = {};
+
+  Object.keys( sheet ).forEach( function( index ) {
+    var cell = sheet[ index ].gs$cell;
+    var cellCol = cell.col;
+    var cellRow = cell.row;
+    var cellData = cell.$t;
+
+    if ( cellRow === "1" ) {
+      // entry is a column label.
+      columns[ cellCol ] = cellData;
+    } else {
+      if ( !items[ cellRow ] ) {
+        items[ cellRow ] = {};
+      }
+      items[ cellRow ][ columns[ cellCol ] ] = cellData;
+    }
+  });
+
+  return items;
+}
+
+var ViewModel = function( url ) {
+  var self = this;
+  self.url = ko.observable( url );
+  self.keyword = ko.observable();
+  self.items = ko.observableArray();
+  self.errormsg = ko.observable();
+
+  this.loadUrl = function() {
+    $.ajax( {
+      type: "GET",
+      url: self.url(),
+      dataType: "jsonp",
+      success: function( data ) {
+        self.items( itemsFromGoogleSheets( data ) );
+        self.errormsg( null );
+      },
+      error: function( xhr, status, error ) {
+        self.errormsg( status + " " + xhr.status + ": " + error );
+      }
+    } );
+  };
+
+  this.matches = function( obj ) {
+    var values = "";
+    Object.keys( obj ).forEach( function( key ) {
+      values += obj[ key ] + " ";
+    });
+    return !self.keyword() || values.includes( self.keyword() );
+  };
+};
+
+ko.applyBindings( new ViewModel( "https://spreadsheets.google.com/feeds/cells/1NH9rvVIudYRMMU4ETmRNdiTJQR36xCVYviVWjTEj5pM/1/public/values?alt=json" ) );
+
+} )( jQuery );
