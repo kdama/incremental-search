@@ -29,12 +29,13 @@ function itemsFromGoogleSheets( data ) {
 
 var ViewModel = function( url ) {
   var self = this;
+
   self.url = ko.observable( url );
   self.keyword = ko.observable();
   self.items = ko.observableArray();
   self.errormsg = ko.observable();
 
-  this.loadUrl = function() {
+  self.loadUrl = function() {
     $.ajax( {
       type: "GET",
       url: self.url(),
@@ -49,7 +50,7 @@ var ViewModel = function( url ) {
     } );
   };
 
-  this.matches = function( obj ) {
+  self.matches = function( obj ) {
     // concat all property values...
     var values = "";
     Object.keys( obj ).forEach( function( key ) {
@@ -57,7 +58,7 @@ var ViewModel = function( url ) {
     });
 
     // if keyword is empty, show all data.
-    return !self.keyword() || values.includes( self.keyword() );
+    return !self.keyword() || values.indexOf( self.keyword() ) !== -1;
   };
 };
 
