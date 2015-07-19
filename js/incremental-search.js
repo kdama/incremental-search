@@ -1,6 +1,7 @@
-/* global jQuery, ko */
+( function( root ) {
 
-( function( $ ) {
+var $  = root.$;
+var ko = root.ko;
 
 function itemsFromGoogleSheets( data ) {
   var sheet = data.feed.entry;
@@ -64,4 +65,4 @@ var ViewModel = function( url ) {
 
 ko.applyBindings( new ViewModel( "https://spreadsheets.google.com/feeds/cells/1NH9rvVIudYRMMU4ETmRNdiTJQR36xCVYviVWjTEj5pM/1/public/values?alt=json" ) );
 
-} )( jQuery );
+} )( window );
