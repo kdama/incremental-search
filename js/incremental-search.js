@@ -1,4 +1,4 @@
-/* global $, ko */
+/* global jQuery, ko */
 
 ( function( $ ) {
 
