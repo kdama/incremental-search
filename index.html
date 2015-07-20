@@ -30,10 +30,10 @@
     </div>
   </div>
   <div class="row" data-bind="foreach: { data: items, as: 'item' }">
-    <div class="col-xs-6 col-md-3" data-bind="visible: item && $root.matches( item )">
+    <div class="col-xs-6 col-md-3" data-bind="visible: item ? item.matches( $root.keyword() ) : false">
       <div class="thumbnail">
-        <ul class="list-unstyled" data-bind="foreach: { data: item ? Object.keys( item ) : [], as: 'param_key' }">
-          <li data-bind="text: item[ param_key ], css: { h2: param_key === Object.keys( item )[ 0 ] }"></li>
+        <ul class="list-unstyled" data-bind="foreach: { data: item ? item.properties : [], as: 'property' }">
+          <li data-bind="text: property.value, css: { h2: property === item.properties()[ 0 ] }"></li>
         </ul>
       </div>
     </div>
