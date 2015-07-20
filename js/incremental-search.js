@@ -17,15 +17,10 @@ var Item = function() {
 
   self.properties = ko.observableArray( [] );
 
-  self.matches = function( keyword ) {
-    // concat all property values...
-    var property_values = "";
-    ko.utils.arrayForEach( self.properties(), function( property ) {
-      property_values += property.value() + " ";
+  self.includes = function( keyword ) {
+    return self.properties().some( function( property ) {
+      return property.value().indexOf( keyword ) !== -1;
     } );
-
-    // if keyword is empty, show all data.
-    return !keyword || property_values.indexOf( keyword ) !== -1;
   };
 };
 
@@ -77,11 +72,11 @@ var ViewModel = function( url ) {
 
     Object.keys( sheet ).forEach( function( index ) {
       var cell = sheet[ index ].gs$cell;
-      var cellCol = cell.col;
-      var cellRow = cell.row;
+      var cellCol = cell.col - 1; // col indices start at 1.
+      var cellRow = cell.row - 2; // row indices start at 2.
       var cellData = cell.$t;
 
-      if ( cellRow === "1" ) {
+      if ( cellRow === "-1" ) {
         // this cell is a column label.
         columns[ cellCol ] = cellData;
       } else {
@@ -92,6 +87,11 @@ var ViewModel = function( url ) {
     });
 
     return items;
+  };
+
+  self.matches = function( item ) {
+    // if keyword is empty, show all data.
+    return !self.keyword() || item.includes( self.keyword() );
   };
 };
 
