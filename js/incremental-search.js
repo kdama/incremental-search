@@ -3,6 +3,34 @@
 var $  = root.$;
 var ko = root.ko;
 
+/* Model */
+
+var Property = function( key, value ) {
+  var self = this;
+
+  self.key = ko.observable( key );
+  self.value = ko.observable( value );
+};
+
+var Item = function() {
+  var self = this;
+
+  self.properties = ko.observableArray( [] );
+
+  self.matches = function( keyword ) {
+    // concat all property values...
+    var property_values = "";
+    ko.utils.arrayForEach( self.properties(), function( property ) {
+      property_values += property.value() + " ";
+    } );
+
+    // if keyword is empty, show all data.
+    return !keyword || property_values.indexOf( keyword ) !== -1;
+  };
+};
+
+/* ViewModel */
+
 var ViewModel = function( url ) {
   var self = this;
 
@@ -17,7 +45,7 @@ var ViewModel = function( url ) {
       url: self.url(),
       dataType: "jsonp",
       success: function( data ) {
-        self.items( self.itemsFromGoogleSheets( data ) );
+        self.items( self.itemsFromGoogleSheetsJson( data ) );
         self.errormsg( null );
       },
       error: function( xhr, status, error ) {
@@ -26,10 +54,26 @@ var ViewModel = function( url ) {
     } );
   };
 
-  self.itemsFromGoogleSheets = function( data ) {
+  self.itemsFromGoogleSheetsJson = function( data ) {
+    /*
+     *  Name   Age
+     *  ----------
+     *  Alice  20
+     *  Bob    30
+     *
+     *      |
+     *      v
+     *
+     *  [
+     *    { properties: [ { key: "Name", value: "Alice" }, { key: "Age", value: "20" } ] },
+     *    { properties: [ { key: "Name", value: "Bob"   }, { key: "Age", value: "30" } ] }
+     *  ]
+     *
+     */
+
     var sheet = data.feed.entry;
     var items = [];
-    var columns = {};
+    var columns = [];
 
     Object.keys( sheet ).forEach( function( index ) {
       var cell = sheet[ index ].gs$cell;
@@ -41,25 +85,13 @@ var ViewModel = function( url ) {
         // this cell is a column label.
         columns[ cellCol ] = cellData;
       } else {
-        if ( !items[ cellRow ] ) {
-          items[ cellRow ] = {};
-        }
-        items[ cellRow ][ columns[ cellCol ] ] = cellData;
+        items[ cellRow ] = items[ cellRow ] || new Item();
+        var property = new Property( columns[ cellCol ], cellData );
+        items[ cellRow ].properties.push( property );
       }
     });
 
     return items;
-  };
-
-  self.matches = function( obj ) {
-    // concat all property values...
-    var values = "";
-    Object.keys( obj ).forEach( function( key ) {
-      values += obj[ key ] + " ";
-    });
-
-    // if keyword is empty, show all data.
-    return !self.keyword() || values.indexOf( self.keyword() ) !== -1;
   };
 };
 
