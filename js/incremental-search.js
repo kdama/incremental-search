@@ -3,31 +3,6 @@
 var $  = root.$;
 var ko = root.ko;
 
-function itemsFromGoogleSheets( data ) {
-  var sheet = data.feed.entry;
-  var items = [];
-  var columns = {};
-
-  Object.keys( sheet ).forEach( function( index ) {
-    var cell = sheet[ index ].gs$cell;
-    var cellCol = cell.col;
-    var cellRow = cell.row;
-    var cellData = cell.$t;
-
-    if ( cellRow === "1" ) {
-      // this cell is a column label.
-      columns[ cellCol ] = cellData;
-    } else {
-      if ( !items[ cellRow ] ) {
-        items[ cellRow ] = {};
-      }
-      items[ cellRow ][ columns[ cellCol ] ] = cellData;
-    }
-  });
-
-  return items;
-}
-
 var ViewModel = function( url ) {
   var self = this;
 
@@ -42,13 +17,38 @@ var ViewModel = function( url ) {
       url: self.url(),
       dataType: "jsonp",
       success: function( data ) {
-        self.items( itemsFromGoogleSheets( data ) );
+        self.items( self.itemsFromGoogleSheets( data ) );
         self.errormsg( null );
       },
       error: function( xhr, status, error ) {
         self.errormsg( status + " " + xhr.status + ": " + error );
       }
     } );
+  };
+
+  self.itemsFromGoogleSheets = function( data ) {
+    var sheet = data.feed.entry;
+    var items = [];
+    var columns = {};
+
+    Object.keys( sheet ).forEach( function( index ) {
+      var cell = sheet[ index ].gs$cell;
+      var cellCol = cell.col;
+      var cellRow = cell.row;
+      var cellData = cell.$t;
+
+      if ( cellRow === "1" ) {
+        // this cell is a column label.
+        columns[ cellCol ] = cellData;
+      } else {
+        if ( !items[ cellRow ] ) {
+          items[ cellRow ] = {};
+        }
+        items[ cellRow ][ columns[ cellCol ] ] = cellData;
+      }
+    });
+
+    return items;
   };
 
   self.matches = function( obj ) {
