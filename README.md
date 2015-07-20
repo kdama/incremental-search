@@ -36,16 +36,23 @@ http://kdama.github.io/incremental-search/
 * JavaScript のスタイルは [jQuery's JavaScript Style Guide](https://contribute.jquery.org/style-guide/js/) に従う
 * JavaScript を HTML ファイルに直接記述してはならない
 
-方針
+設計
 ----
 
-* HTML
-  * **URL バー**: 余裕あれば付ける。`<input>` でやる。隣に [Go] button を置く
-  * **検索ボックス**: `<input>` でやる。隣に button は置かない。keyUp イベントでインクリメンタルサーチする
-  * **データのリスト**: `<ul>` `<li>` でがんばる
-* Google Sheets からの取得
-  1. URL の最後に ?alt=json 付けると JSON もらえるらしい... `http://creator.aainc.co.jp/archives/6240`
-  2. gs$cell をがんばって読む (ここがいちばんつらそう..)
-  3. 必要なだけ `<ul>` `<li>` を生成する
-* インクリメンタルサーチ
-  * 一旦リストの全要素を hide して、contains で絞ったものだけ show すればいいらしい... `http://tech.aainc.co.jp/archives/6364`
+* Model
+  * **プロパティ**
+    * 変数: **キー**
+    * 変数: **値**
+  * **アイテム**
+    * 変数: **プロパティの配列**
+    * 機能: **プロパティの配列** の中に、**与えられた文字列** に部分一致する **値** を持つものが存在するかを返す
+* ViewModel
+  * 変数: **読み込み先の URL**
+  * 変数: **検索キーワード**
+  * 変数: **アイテムの配列**
+  * 機能: **読み込み先の URL** から Google Sheets の JSON を取得して **アイテムの配列** に入れる
+  * 機能: **与えられたアイテム** が **検索キーワード** にマッチしているかを返す
+* View
+  * ViewModel の **読み込み先の URL** にバインドした入力欄を持つ
+  * ViewModel の **検索キーワード** にバインドした入力欄を持つ
+  * ViewModel の **アイテムの配列** のうち **検索キーワード** にマッチするアイテムを表示する
