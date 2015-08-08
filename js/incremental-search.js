@@ -6,24 +6,24 @@ var ko = root.ko;
 /* Collections */
 
 var Property = function( key, value ) {
-  this.key = ko.observable( key );
-  this.value = ko.observable( value );
+  this.key = key;
+  this.value = value;
 };
 
 var Item = function() {
-  this.properties = ko.observableArray( [] );
+  this.properties = [];
 };
 
 Item.prototype.includes = function( keyword ) {
-  return this.properties().some( function( property ) {
-    return property.value().indexOf( keyword ) !== -1;
+  return this.properties.some( function( property ) {
+    return property.value.indexOf( keyword ) !== -1;
   } );
 };
 
 /* Model */
 
 var Model = function() {
-  this.items = ko.observableArray();
+  this.items = {};
 };
 
 Model.prototype.loadUrl = function( url, settings ) {
@@ -32,7 +32,8 @@ Model.prototype.loadUrl = function( url, settings ) {
     dataType: "jsonp",
     context: this,
   } ).done( function( data ) {
-    this.items(this._itemsFromGoogleSheetsJson( data ));
+    this.items = this._itemsFromGoogleSheetsJson( data );
+    settings.success( this.items );
   } ).fail( function( jqXHR, textStatus, errorThrown ) {
     settings.error( {
       jqXHR: jqXHR,
@@ -90,19 +91,18 @@ Model.prototype._itemsFromGoogleSheetsJson = function( data ) {
 var ViewModel = function( url, model ) {
   this.url = ko.observable( url );
   this.keyword = ko.observable();
+  this.items = ko.observable();
   this.errormsg = ko.observable();
-
   this.model = ko.observable( model );
-
-  this.items = ko.pureComputed( function() {
-    return this.model().items();
-  }, this );
 };
 
 ViewModel.prototype.loadUrl = function() {
   var self = this;
 
   this.model().loadUrl( this.url(), {
+    success: function( data ) {
+      self.items( data );
+    },
     error: function( error ) {
       self.errormsg( self._errormsgFromError( error ) );
     }
