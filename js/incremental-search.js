@@ -1,7 +1,8 @@
 ( function( root ) {
 
-var $  = root.$;
-var ko = root.ko;
+var $            = root.$;
+var ko           = root.ko;
+var localStorage = root.localStorage;
 
 /* Collections */
 
@@ -91,7 +92,7 @@ Model.prototype._itemsFromGoogleSheetsJson = function( data ) {
 var ViewModel = function( url, model ) {
   this.url = ko.observable( url );
   this.keyword = ko.observable();
-  this.items = ko.observable();
+  this.items = ko.observableArray( this._loadItemsFromLocalStorage() );
   this.errormsg = ko.observable();
   this.model = ko.observable( model );
 };
@@ -102,6 +103,7 @@ ViewModel.prototype.loadUrl = function() {
   this.model().loadUrl( this.url(), {
     success: function( data ) {
       self.items( data );
+      localStorage.setItem( "items", JSON.stringify( data ) );
     },
     error: function( error ) {
       self.errormsg( self._errormsgFromError( error ) );
@@ -112,6 +114,23 @@ ViewModel.prototype.loadUrl = function() {
 ViewModel.prototype.matches = function( item ) {
   // if keyword is empty, show all data.
   return !this.keyword() || item.includes( this.keyword() );
+};
+
+ViewModel.prototype._loadItemsFromLocalStorage = function() {
+  var items = [];
+  if (localStorage && localStorage.getItem( "items" )) {
+    Object.keys( JSON.parse( localStorage.getItem( "items" ) ) ).forEach( function( item_index ) {
+      var newItem = new Item();
+      var item = JSON.parse( localStorage.getItem( "items" ) )[ item_index ];
+      Object.keys( item.properties ).forEach( function( property_index ) {
+        var property = item.properties[ property_index ];
+        var newProperty = new Property( property.key, property.value );
+        newItem.properties.push( newProperty );
+      } );
+      items.push( newItem );
+    } );
+  }
+  return items;
 };
 
 ViewModel.prototype._errormsgFromError = function ( error ) {
