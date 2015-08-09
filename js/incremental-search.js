@@ -81,7 +81,7 @@ Model.prototype._itemsFromGoogleSheetsJson = function( data ) {
 
       items[ cellRow ].properties.push( property );
     }
-  });
+  } );
 
   return items;
 };
