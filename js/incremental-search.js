@@ -72,7 +72,7 @@ Model.prototype._itemsFromGoogleSheetsJson = function( data ) {
 
     var property;
 
-    if ( cellRow === "-1" ) {
+    if ( cellRow === -1 ) {
       // this cell is a column label.
       columnLabels[ cellCol ] = cellData;
     } else {
