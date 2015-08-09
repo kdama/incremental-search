@@ -1,7 +1,8 @@
 ( function( root ) {
 
-var $  = root.$;
-var ko = root.ko;
+var $            = root.$;
+var ko           = root.ko;
+var localStorage = root.localStorage;
 
 /* Collections */
 
@@ -91,9 +92,13 @@ Model.prototype._itemsFromGoogleSheetsJson = function( data ) {
 var ViewModel = function( url, model ) {
   this.url = ko.observable( url );
   this.keyword = ko.observable();
-  this.items = ko.observable();
   this.errormsg = ko.observable();
   this.model = ko.observable( model );
+  this.items = ko.observableArray( this._loadItemsFromLocalStorage() );
+};
+
+ViewModel.prototype._storeKeys = {
+  items: "incremental-search-items"
 };
 
 ViewModel.prototype.loadUrl = function() {
@@ -102,6 +107,7 @@ ViewModel.prototype.loadUrl = function() {
   this.model().loadUrl( this.url(), {
     success: function( data ) {
       self.items( data );
+      localStorage.setItem( self._storeKeys.items, JSON.stringify( data ) );
     },
     error: function( error ) {
       self.errormsg( self._errormsgFromError( error ) );
@@ -112,6 +118,22 @@ ViewModel.prototype.loadUrl = function() {
 ViewModel.prototype.matches = function( item ) {
   // if keyword is empty, show all data.
   return !this.keyword() || item.includes( this.keyword() );
+};
+
+ViewModel.prototype._loadItemsFromLocalStorage = function() {
+  var cachedItems = JSON.parse( localStorage.getItem( this._storeKeys.items ) );
+
+  // cachedItems dont have Item.includes method, so new Item must be generated.
+  if ( cachedItems ) {
+    return cachedItems.map( function( cachedItem ) {
+      var newItem = new Item();
+      newItem.properties = cachedItem.properties;
+      return newItem;
+    } );
+  }
+  else {
+    return [];
+  }
 };
 
 ViewModel.prototype._errormsgFromError = function ( error ) {
