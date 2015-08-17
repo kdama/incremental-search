@@ -90,11 +90,19 @@ Model.prototype._itemsFromGoogleSheetsJson = function( data ) {
 /* ViewModel */
 
 var ViewModel = function( url, model ) {
+  var self = this;
+
   this.url = ko.observable( url );
   this.keyword = ko.observable();
   this.errormsg = ko.observable();
   this.model = ko.observable( model );
-  this.items = ko.observableArray( this._loadItemsFromLocalStorage() );
+
+  // if items-cache does not exist, load from url.
+  this.items = ko.observableArray( this._loadItemsFromLocalStorage( {
+    fail: function() {
+      self.loadUrl();
+    }
+  } ) );
 };
 
 ViewModel.prototype._storeKeys = {
@@ -120,7 +128,7 @@ ViewModel.prototype.matches = function( item ) {
   return !this.keyword() || item.includes( this.keyword() );
 };
 
-ViewModel.prototype._loadItemsFromLocalStorage = function() {
+ViewModel.prototype._loadItemsFromLocalStorage = function( settings ) {
   var cachedItems = JSON.parse( localStorage.getItem( this._storeKeys.items ) );
 
   // cachedItems dont have Item.includes method, so new Item must be generated.
@@ -132,6 +140,7 @@ ViewModel.prototype._loadItemsFromLocalStorage = function() {
     } );
   }
   else {
+    settings.fail();
     return [];
   }
 };
