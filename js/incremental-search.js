@@ -41,8 +41,7 @@ Model.prototype._getCache = function () {
       newItem.properties = cachedItem.properties;
       return newItem;
     } );
-  }
-  else {
+  } else {
     return null;
   }
 };
