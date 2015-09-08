@@ -1,29 +1,10 @@
 ( function( root ) {
 
 var $            = root.$;
-var ko           = root.ko;
 var localStorage = root.localStorage;
+var _            = root._ = root._ || {};
 
-/* Collections */
-
-var Property = function( key, value ) {
-  this.key = key;
-  this.value = value;
-};
-
-var Item = function() {
-  this.properties = [];
-};
-
-Item.prototype.includes = function( keyword ) {
-  return this.properties.some( function( property ) {
-    return property.value.indexOf( keyword ) !== -1;
-  } );
-};
-
-/* Model */
-
-var Model = function() {
+var Model = _.Model = function() {
   this.items = this._getCache();
 };
 
@@ -37,7 +18,7 @@ Model.prototype._getCache = function () {
   // cachedItems dont have Item.includes method, so new Item must be generated.
   if ( cachedItems ) {
     return cachedItems.map( function( cachedItem ) {
-      var newItem = new Item();
+      var newItem = new _.Item();
       newItem.properties = cachedItem.properties;
       return newItem;
     } );
@@ -100,8 +81,8 @@ Model.prototype._itemsFromGoogleSheetsJson = function( data ) {
       // this cell is a column label.
       columnLabels[ cellCol ] = cellData;
     } else {
-      items[ cellRow ] = items[ cellRow ] || new Item();
-      property = new Property( columnLabels[ cellCol ], cellData );
+      items[ cellRow ] = items[ cellRow ] || new _.Item();
+      property = new _.Property( columnLabels[ cellCol ], cellData );
 
       items[ cellRow ].properties.push( property );
     }
@@ -109,44 +90,5 @@ Model.prototype._itemsFromGoogleSheetsJson = function( data ) {
 
   return items;
 };
-
-/* ViewModel */
-
-var ViewModel = function( url, model ) {
-  this.url = ko.observable( url );
-  this.keyword = ko.observable();
-  this.errormsg = ko.observable();
-  this.model = ko.observable( model );
-  this.items = ko.observable( this.model().items );
-
-  // if items-cache does not exist, load from url.
-  if ( !this.model().items ) {
-    this.loadUrl();
-  }
-};
-
-ViewModel.prototype.loadUrl = function() {
-  var self = this;
-
-  this.model().loadUrl( this.url(), {
-    success: function( data ) {
-      self.items( data );
-    },
-    error: function( error ) {
-      self.errormsg( self._errormsgFromError( error ) );
-    }
-  } );
-};
-
-ViewModel.prototype.matches = function( item ) {
-  // if keyword is empty, show all data.
-  return !this.keyword() || item.includes( this.keyword() );
-};
-
-ViewModel.prototype._errormsgFromError = function ( error ) {
-  return error.jqXHR.status + " " + error.textStatus + ": " + error.errorThrown;
-};
-
-ko.applyBindings( new ViewModel( "https://spreadsheets.google.com/feeds/cells/1NH9rvVIudYRMMU4ETmRNdiTJQR36xCVYviVWjTEj5pM/1/public/values?alt=json", new Model() ) );
 
 } )( window );
