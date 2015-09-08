@@ -1,7 +1,8 @@
 ( function( root ) {
 
-var $  = root.$;
-var ko = root.ko;
+var $            = root.$;
+var ko           = root.ko;
+var localStorage = root.localStorage;
 
 /* Collections */
 
@@ -23,16 +24,39 @@ Item.prototype.includes = function( keyword ) {
 /* Model */
 
 var Model = function() {
-  this.items = {};
+  this.items = this._getCache();
+};
+
+Model.prototype._storeKeys = {
+  items: "incremental-search-items"
+};
+
+Model.prototype._getCache = function () {
+  var cachedItems = JSON.parse( localStorage.getItem( this._storeKeys.items ) );
+
+  // cachedItems dont have Item.includes method, so new Item must be generated.
+  if ( cachedItems ) {
+    return cachedItems.map( function( cachedItem ) {
+      var newItem = new Item();
+      newItem.properties = cachedItem.properties;
+      return newItem;
+    } );
+  } else {
+    return null;
+  }
 };
 
 Model.prototype.loadUrl = function( url, settings ) {
+  this.items = this._getCache();
+  settings.success( this.items );
+
   $.ajax( url, {
     type: "GET",
     dataType: "jsonp",
     context: this,
   } ).done( function( data ) {
     this.items = this._itemsFromGoogleSheetsJson( data );
+    localStorage.setItem( this._storeKeys.items, JSON.stringify( this.items ) );
     settings.success( this.items );
   } ).fail( function( jqXHR, textStatus, errorThrown ) {
     settings.error( {
@@ -91,9 +115,14 @@ Model.prototype._itemsFromGoogleSheetsJson = function( data ) {
 var ViewModel = function( url, model ) {
   this.url = ko.observable( url );
   this.keyword = ko.observable();
-  this.items = ko.observable();
   this.errormsg = ko.observable();
   this.model = ko.observable( model );
+  this.items = ko.observable( this.model().items );
+
+  // if items-cache does not exist, load from url.
+  if ( !this.model().items ) {
+    this.loadUrl();
+  }
 };
 
 ViewModel.prototype.loadUrl = function() {
