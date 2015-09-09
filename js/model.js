@@ -2,9 +2,24 @@
 
 var $            = root.$;
 var localStorage = root.localStorage;
-var _            = root._ = root._ || {};
+var inc          = root.inc = root.inc || {};
 
-var Model = _.Model = function() {
+var Property = inc.Property = function( key, value ) {
+  this.key = key;
+  this.value = value;
+};
+
+var Item = inc.Item = function() {
+  this.properties = [];
+};
+
+Item.prototype.includes = function( keyword ) {
+  return this.properties.some( function( property ) {
+    return property.value.indexOf( keyword ) !== -1;
+  } );
+};
+
+var Model = inc.Model = function() {
   this.items = this._getCache();
 };
 
@@ -18,7 +33,7 @@ Model.prototype._getCache = function () {
   // cachedItems dont have Item.includes method, so new Item must be generated.
   if ( cachedItems ) {
     return cachedItems.map( function( cachedItem ) {
-      var newItem = new _.Item();
+      var newItem = new inc.Item();
       newItem.properties = cachedItem.properties;
       return newItem;
     } );
@@ -81,8 +96,8 @@ Model.prototype._itemsFromGoogleSheetsJson = function( data ) {
       // this cell is a column label.
       columnLabels[ cellCol ] = cellData;
     } else {
-      items[ cellRow ] = items[ cellRow ] || new _.Item();
-      property = new _.Property( columnLabels[ cellCol ], cellData );
+      items[ cellRow ] = items[ cellRow ] || new inc.Item();
+      property = new inc.Property( columnLabels[ cellCol ], cellData );
 
       items[ cellRow ].properties.push( property );
     }
