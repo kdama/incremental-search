@@ -1,9 +1,9 @@
 ( function( root ) {
 
-var ko = root.ko;
-var _  = root._ = root._ || {};
+var ko  = root.ko;
+var inc = root.inc = root.inc || {};
 
-var ViewModel = _.ViewModel = function( url, model ) {
+var ViewModel = inc.ViewModel = function( url, model ) {
   this.url = ko.observable( url );
   this.keyword = ko.observable();
   this.errormsg = ko.observable();
