@@ -1,8 +1,8 @@
 ( function( root ) {
 
-var ko = root.ko;
-var _  = root._ = root._ || {};
+var ko  = root.ko;
+var inc = root.inc = root.inc || {};
 
-ko.applyBindings( new _.ViewModel( "https://spreadsheets.google.com/feeds/cells/1NH9rvVIudYRMMU4ETmRNdiTJQR36xCVYviVWjTEj5pM/1/public/values?alt=json", new _.Model() ) );
+ko.applyBindings( new inc.ViewModel( "https://spreadsheets.google.com/feeds/cells/1NH9rvVIudYRMMU4ETmRNdiTJQR36xCVYviVWjTEj5pM/1/public/values?alt=json", new inc.Model() ) );
 
 } )( window );
