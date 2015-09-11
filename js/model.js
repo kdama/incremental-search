@@ -33,7 +33,7 @@ Model.prototype._getCache = function () {
   // cachedItems dont have Item.includes method, so new Item must be generated.
   if ( cachedItems ) {
     return cachedItems.map( function( cachedItem ) {
-      var newItem = new inc.Item();
+      var newItem = new Item();
       newItem.properties = cachedItem.properties;
       return newItem;
     } );
@@ -96,8 +96,8 @@ Model.prototype._itemsFromGoogleSheetsJson = function( data ) {
       // this cell is a column label.
       columnLabels[ cellCol ] = cellData;
     } else {
-      items[ cellRow ] = items[ cellRow ] || new inc.Item();
-      property = new inc.Property( columnLabels[ cellCol ], cellData );
+      items[ cellRow ] = items[ cellRow ] || new Item();
+      property = new Property( columnLabels[ cellCol ], cellData );
 
       items[ cellRow ].properties.push( property );
     }
