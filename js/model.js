@@ -43,17 +43,19 @@ Model.prototype._getCache = function () {
 };
 
 Model.prototype.loadUrl = function( url, settings ) {
+  var self = this;
+
   this.items = this._getCache();
   settings.success( this.items );
 
   $.ajax( url, {
     type: "GET",
     dataType: "jsonp",
-    context: this,
+    context: self,
   } ).done( function( data ) {
-    this.items = this._itemsFromGoogleSheetsJson( data );
-    localStorage.setItem( this._storeKeys.items, JSON.stringify( this.items ) );
-    settings.success( this.items );
+    self.items = self._itemsFromGoogleSheetsJson( data );
+    localStorage.setItem( self._storeKeys.items, JSON.stringify( self.items ) );
+    settings.success( self.items );
   } ).fail( function( jqXHR, textStatus, errorThrown ) {
     settings.error( {
       jqXHR: jqXHR,
