@@ -5,6 +5,7 @@ Demo
 ----
 http://kdama.github.io/incremental-search/
 * [デフォルトのデータ](https://docs.google.com/spreadsheets/d/1NH9rvVIudYRMMU4ETmRNdiTJQR36xCVYviVWjTEj5pM/pubhtml) は `http://kazina.com/dummy/` により生成したものです
+* [Test with Jasmine](http://kdama.github.io/incremental-search/test/jasmine/SpecRunner.html)
 
 要求
 ----
