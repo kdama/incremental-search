@@ -1,7 +1,8 @@
 ( function( root ) {
 
-var $   = root.$;
-var inc = root.inc;
+var $            = root.$;
+var localStorage = root.localStorage;
+var inc          = root.inc;
 
 /* Property */
 
@@ -76,95 +77,52 @@ describe( "Model", function() {
     model = new inc.Model();
   } );
 
-  it( "should be able to understand the google sheets json format", function() {
-    spyOn($, "ajax").and.callFake( function () {
-      var d = $.Deferred();
-      d.resolve( {
-        feed: {
-          entry: [
-            {
-              gs$cell: {
-                col: 1,
-                row: 1,
-                $t: "Name"
-              }
-            },
-            {
-              gs$cell: {
-                col: 1,
-                row: 2,
-                $t: "Alice"
-              }
-            },
-            {
-              gs$cell: {
-                col: 1,
-                row: 3,
-                $t: "Bob"
-              }
-            },
-            {
-              gs$cell: {
-                col: 2,
-                row: 1,
-                $t: "Age"
-              }
-            },
-            {
-              gs$cell: {
-                col: 2,
-                row: 2,
-                $t: "20"
-              }
-            },
-            {
-              gs$cell: {
-                col: 2,
-                row: 3,
-                $t: "30"
-              }
-            },
-          ]
+  describe( "when get some data", function() {
+    var success_object;
+
+    beforeEach( function( done ) {
+      model.loadUrl( "http://example.com/", {
+        success: function( object ) {
+          if ( success_object = object ) {
+            done();
+          }
+        },
+        error: function( object ) {
+          fail( object );
         }
       } );
-      return d.promise();
     } );
 
-    model.loadUrl( "http://example.com/", {
-      success: function( object ) {
-        expect( JSON.stringify( object ) ).toBe( JSON.stringify(
-          [
-            {
-              properties: [
-                {
-                  key: "Name",
-                  value: "Alice"
-                },
-                {
-                  key: "Age",
-                  value: "20"
-                }
-              ]
-            },
-            {
-              properties: [
-                {
-                  key: "Name",
-                  value: "Bob"
-                },
-                {
-                  key: "Age",
-                  value: "30"
-                }
-              ]
-            }
-          ]
-        ) );
-      },
-      error: function( object ) {
-        fail( object );
-      }
-    } );
+    it( "should be able to understand as google sheets json", function() {
+      expect( JSON.stringify( success_object ) ).toBe( JSON.stringify(
+        [
+          {
+            properties: [
+              {
+                key: "Name",
+                value: "Alice"
+              },
+              {
+                key: "Age",
+                value: "20"
+              }
+            ]
+          },
+          {
+            properties: [
+              {
+                key: "Name",
+                value: "Bob"
+              },
+              {
+                key: "Age",
+                value: "30"
+              }
+            ]
+          }
+       ]
+     ) );
+   } );
   } );
 } );
 
