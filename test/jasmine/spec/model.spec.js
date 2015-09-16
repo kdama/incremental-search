@@ -1,8 +1,6 @@
 ( function( root ) {
 
-var $            = root.$;
-var localStorage = root.localStorage;
-var inc          = root.inc;
+var inc = root.inc;
 
 /* Property */
 
@@ -77,7 +75,7 @@ describe( "Model", function() {
     model = new inc.Model();
   } );
 
-  describe( "when get some data", function() {
+  describe( "after loading a url", function() {
     var success_object;
 
     beforeEach( function( done ) {
@@ -93,7 +91,7 @@ describe( "Model", function() {
       } );
     } );
 
-    it( "should be able to understand as google sheets json", function() {
+    it( "should be able to understand the received data as google sheets json", function() {
       expect( JSON.stringify( success_object ) ).toBe( JSON.stringify(
         [
           {
