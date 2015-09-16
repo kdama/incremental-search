@@ -1,3 +1,8 @@
+( function( root ) {
+
+var $            = root.$;
+var localStorage = root.localStorage;
+
 beforeEach( function () {
   var storage = {};
 
@@ -62,3 +67,5 @@ beforeEach( function () {
     return d.promise();
   } );
 } );
+
+} )( window );
