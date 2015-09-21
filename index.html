@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <title>incremental-search</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/g/bootstrap.material-design@0.3.0(css/material-fullpalette.min.css+css/material.min.css+css/ripples.min.css+css/roboto.min.css+css/material-fullpalette.css+css/ripples.css+css/roboto.css)">
+  <script src="https://cdn.jsdelivr.net/g/bootstrap.material-design@0.3.0(js/material.min.js+js/ripples.min.js)"></script>
 </head>
 <body>
 
@@ -33,10 +35,12 @@
   </div>
   <div class="row" data-bind="foreach: { data: items, as: 'item' }">
     <div class="col-sm-6 col-md-3" data-bind="visible: $root.matches( item )">
-      <div class="thumbnail">
-        <ul class="list-unstyled" data-bind="foreach: { data: item.properties, as: 'property' }">
-          <li data-bind="text: property.value, css: { h2: $index() === 0 }"></li>
-        </ul>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <ul class="list-unstyled" data-bind="foreach: { data: item.properties, as: 'property' }">
+            <li data-bind="text: property.value, css: { h2: $index() === 0 }"></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
