@@ -17,36 +17,37 @@ describe( "ViewModel", function() {
     expect( viewmodel.model().loadUrl.calls.any() ).toBe( true );
   } );
 
-  it( "should insist 'matches' when keyword is empty", function() {
-    var item = new inc.Item();
-    item.properties.push( new inc.Property( "Key", "Value" ) );
+  describe( ".matches", function() {
+    it( "should return true when the keyword is empty", function() {
+      var item = new inc.Item();
+      item.properties.push( new inc.Property( "Key", "Value" ) );
 
-    viewmodel.keyword( "" );
-    expect( viewmodel.matches( item ) ).toBe( true );
+      viewmodel.keyword( "" );
+      expect( viewmodel.matches( item ) ).toBe( true );
 
-    viewmodel.keyword( null );
-    expect( viewmodel.matches( item ) ).toBe( true );
+      viewmodel.keyword( null );
+      expect( viewmodel.matches( item ) ).toBe( true );
 
-    viewmodel.keyword( undefined );
-    expect( viewmodel.matches( item ) ).toBe( true );
+      viewmodel.keyword( undefined );
+      expect( viewmodel.matches( item ) ).toBe( true );
+    } );
+
+    it( "should return true when a given item matches the keyword", function() {
+      var item = new inc.Item();
+      item.properties.push( new inc.Property( "Key", "Value" ) );
+
+      viewmodel.keyword( "Val" );
+      expect( viewmodel.matches( item ) ).toBe( true );
+    } );
+
+    it( "should return false when a given item does not match the keyword", function() {
+      var item = new inc.Item();
+      item.properties.push( new inc.Property( "Key", "Value" ) );
+
+      viewmodel.keyword( "val" );
+      expect( viewmodel.matches( item ) ).toBe( false );
+    } );
   } );
-
-  it( "should be able to check that a given item matches the keyword", function() {
-    var item = new inc.Item();
-    item.properties.push( new inc.Property( "Key", "Value" ) );
-
-    viewmodel.keyword( "Val" );
-    expect( viewmodel.matches( item ) ).toBe( true );
-  } );
-
-  it( "should be able to check that a given item does not match the keyword", function() {
-    var item = new inc.Item();
-    item.properties.push( new inc.Property( "Key", "Value" ) );
-
-    viewmodel.keyword( "val" );
-    expect( viewmodel.matches( item ) ).toBe( false );
-  } );
-
 } );
 
 
