@@ -51,7 +51,6 @@ Model.prototype.loadUrl = function( url, settings ) {
   $.ajax( url, {
     type: "GET",
     dataType: "jsonp",
-    context: self,
   } ).done( function( data ) {
     self.items = self._itemsFromGoogleSheetsJson( data );
     localStorage.setItem( self._storeKeys.items, JSON.stringify( self.items ) );
