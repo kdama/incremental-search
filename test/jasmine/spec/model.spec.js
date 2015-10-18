@@ -50,19 +50,21 @@ describe( "Item", function() {
     expect( item.properties.length ).toBe( 4 );
   } );
 
-  it( "should be able to check that some properties contains a given value", function() {
-    expect( item.includes( "Value" ) ).toBe( true );
-    expect( item.includes( "-01" ) ).toBe( true );
-    expect( item.includes( "値" ) ).toBe( true );
-    expect( item.includes( "" ) ).toBe( true );
-  } );
+  describe( ".includes", function() {
+    it( "should return true when some properties contains a given value", function() {
+      expect( item.includes( "Val" ) ).toBe( true );
+      expect( item.includes( "1" ) ).toBe( true );
+      expect( item.includes( "値" ) ).toBe( true );
+      expect( item.includes( "" ) ).toBe( true );
+    } );
 
-  it( "should be able to check that some properties does not contain a given value", function() {
-    expect( item.includes( "value" ) ).toBe( false );
-    expect( item.includes( "0-1" ) ).toBe( false );
-    expect( item.includes( "あたい" ) ).toBe( false );
-    expect( item.includes( null ) ).toBe( false );
-    expect( item.includes( undefined ) ).toBe( false );
+    it( "should return false when some properties does not contain a given value", function() {
+      expect( item.includes( "value" ) ).toBe( false );
+      expect( item.includes( "-1" ) ).toBe( false );
+      expect( item.includes( "あたい" ) ).toBe( false );
+      expect( item.includes( null ) ).toBe( false );
+      expect( item.includes( undefined ) ).toBe( false );
+    } );
   } );
 } );
 
